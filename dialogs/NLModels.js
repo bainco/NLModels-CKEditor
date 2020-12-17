@@ -14,7 +14,8 @@
  * Example URL for iframe src:
  * https://netlogoweb.org/web?https://netlogoweb.org/assets/modelslib/Curricular%20Models/Connected%20Chemistry/Connected%20Chemistry%20Gas%20Combustion.nlogo
  */
-var NETLOGOWEB_SITE = "https://netlogoweb.org"
+var NETLOGOWEB_SITE = "https://staging.netlogoweb.org"
+var NETLOGOWEB_SITE_PROD = "https://netlogoweb.org"
 var MODEL_JSON_PATH = "/model/list.json"
 var MODEL_STATUSES_JSON_PATH = "/model/statuses.json"
 var NLW_QUERY_SELECTOR = "/web?"
@@ -72,9 +73,9 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
 
       var dialog = this
       // Fetch the NLW Models Library resources we need
-      var modelJSON = CKEDITOR.ajax.load( NETLOGOWEB_SITE + MODEL_JSON_PATH, function( modelJSON ) {
+      var modelJSON = CKEDITOR.ajax.load( NETLOGOWEB_SITE_PROD + MODEL_JSON_PATH, function( modelJSON ) {
         var modelNames = JSON.parse(modelJSON)
-        var statusesJSON = CKEDITOR.ajax.load( NETLOGOWEB_SITE + MODEL_STATUSES_JSON_PATH, function( statusesJSON ) {
+        var statusesJSON = CKEDITOR.ajax.load( NETLOGOWEB_SITE_PROD + MODEL_STATUSES_JSON_PATH, function( statusesJSON ) {
           var modelStatuses = JSON.parse(statusesJSON);
           // Go through the models and get rid of any that don't compile on NLW
           for ( model of modelNames ) {
@@ -92,14 +93,39 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
       // width and height of the rendered model.
       window.addEventListener('message',
         function handleMessage(e) {
+          console.log(e)
           // Check that the message is from where we think
-          if (e.origin = NETLOGOWEB_SITE) {
-            // load in the iframe, resize, and render a border
+          if (e.origin === NETLOGOWEB_SITE) {
+            if (e.data.type === "nlw-export-model-results") {
+              if (e.data.export.success) {
 
-            nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()
-            nlwPreview.setStyle('width',  (e.data.width + "px"))
-            nlwPreview.setStyle('height', (e.data.height + "px"))
-            nlwPreview.setStyle("border", "1px solid black")
+                nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()
+                // Create our iframe
+                var newElement = new CKEDITOR.dom.element( 'iframe' );
+                newElement.setStyle('width',  nlwPreview.getStyle('width'));
+                newElement.setStyle('height', nlwPreview.getStyle('height'));
+                var src = dialog.getContentElement('tab', 'model-picker').getValue()
+                url = src.substring((NETLOGOWEB_SITE_PROD + NLW_QUERY_SELECTOR).length, src.length)
+                  var theBlob = new Blob([e.data.export.result], {
+                    type: 'text/plain'
+                  });
+                  var loader = editor.uploadRepository.create(theBlob, "MyModel.nlogo")
+                  loader.on( 'uploaded', function() {
+                    newElement.setAttribute('src', NETLOGOWEB_SITE + NLW_QUERY_SELECTOR + loader.url);
+                    editor.insertElement( newElement );
+                  });
+                  loader.loadAndUpload(editor.config.filebrowserUploadUrl)
+                //newElement.setAttribute('src', dialog.getContentElement('tab', 'model-picker').getValue());
+                // Place it in the editor
+              }
+            }
+            else if (e.data.type === "nlw-resize") {
+              // load in the iframe, resize, and render a border
+              nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()
+              nlwPreview.setStyle('width',  (e.data.width + "px"))
+              nlwPreview.setStyle('height', (e.data.height + "px"))
+              nlwPreview.setStyle("border", "1px solid black")
+            }
           }
         }, false);
     },
@@ -119,18 +145,9 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
     onOk: function() {
 
       var dialog = this;
-
       // load up the preview element
       nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()
-
-      // Create our iframe
-      var newElement = new CKEDITOR.dom.element( 'iframe' );
-      newElement.setStyle('width',  nlwPreview.getStyle('width'));
-      newElement.setStyle('height', nlwPreview.getStyle('height'));
-      newElement.setAttribute('src', dialog.getContentElement('tab', 'model-picker').getValue());
-
-      // Place it in the editor
-      editor.insertElement( newElement );
+      nlwPreview.$.contentWindow.postMessage({ type: "nlw-export-model"}, "*")
     },
   };
 });

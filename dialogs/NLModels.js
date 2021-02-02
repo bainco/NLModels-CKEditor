@@ -32,20 +32,20 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
     // Manually override button appearance
     buttons: [
       CKEDITOR.dialog.cancelButton.override( {} ),
-      CKEDITOR.dialog.okButton.override( { label : 'Insert Model', disabled: true} ),
+      CKEDITOR.dialog.okButton.override( { label : 'Insert Model', disabled: false} ),
     ],
     // Dialog window content definition.
     contents: [
       {
         // Definition of the tab (page).
-        id: 'tab',
+        id: 'nlw-tab',
         label: 'NetLogo Models Library',
         // The tab content.
         elements: [
           {
             // Select element to pick the model to preview
             type: 'select',
-            id: 'model-picker',
+            id: 'nlw-picker',
             label: 'Select an option from the dropdown below to preview the model and then click Insert Model',
             items: [ ],
             // Called by the main setupContent method call on dialog initialization.
@@ -55,7 +55,7 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
             },
             onChange: function() {
               var dialog = this.getDialog();
-              dialog.disableButton("ok");
+              //dialog.disableButton("ok");
               // Set the iframe src to the selected option
               dialog.getContentElement('tab', 'nlw-preview').getElement().setAttribute('src',this.getValue());
             },
@@ -64,6 +64,38 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
             // iframe element we use to load the model into
             type: 'iframe',
             id: 'nlw-preview',
+            src: ''
+          }
+        ]
+      },
+      {
+        // Definition of the tab (page).
+        id: 'nt-tab',
+        label: 'NetTango Models Library',
+        // The tab content.
+        elements: [
+          {
+            // Select element to pick the model to preview
+            type: 'select',
+            id: 'nt-picker',
+            label: 'Select an option from the dropdown below to preview the model and then click Insert Model',
+            items: [ ],
+            // Called by the main setupContent method call on dialog initialization.
+            setup: function( element ) {
+              // Add a default option
+              this.add('-- select a model to preview -- ', '')
+            },
+            onChange: function() {
+              var dialog = this.getDialog();
+            //  dialog.disableButton("ok");
+              // Set the iframe src to the selected option
+              dialog.getContentElement('tab', 'nt-preview').getElement().setAttribute('src',this.getValue());
+            },
+          },
+          {
+            // iframe element we use to load the model into
+            type: 'iframe',
+            id: 'nt-preview',
             src: ''
           }
         ]
@@ -81,7 +113,7 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
           // Go through the models and get rid of any that don't compile on NLW
           for ( model of modelNames ) {
             if (modelStatuses[model].status != "not_compiling")
-              dialog.getContentElement('tab', 'model-picker').add(
+              dialog.getContentElement('tab', 'nlw-picker').add(
                 model.substring(NLW_MODEL_PATH_FULL.length, model.length),
                 NETLOGOWEB_SITE + NLW_QUERY_SELECTOR + NETLOGOWEB_SITE + NLW_MODEL_ASSET_PATH + model.substring(NLW_MODEL_PATH_PARTIAL.length, model.length) + ".nlogo"
               );
@@ -109,7 +141,7 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
     // Invoked when the dialog is loaded.
     onShow: function() {
       var dialog = this;
-      dialog.disableButton("ok");
+      //dialog.disableButton("ok");
       // Get the selection from the editor.
       var selection = editor.getSelection();
       // Get the element at the start of the selection.
@@ -123,6 +155,8 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
     onOk: function() {
 
       var dialog = this;
+
+      console.log(dialog.definition.dialog._.currentTabId)
 
       // load up the preview element
       nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()

@@ -119,7 +119,13 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
               );
           }
         });
-      } );
+      });
+
+      $('#nlw-picker').selectize({
+          create: true,
+          sortField: 'text'
+      });
+
       // NOTE: on failure of the above, the NLW List will not be populated. Page reload necessary. -  12/5/2020 - CPB
 
       // Add a listener for iframe PostMessages. NLW sends one with the complete
@@ -130,6 +136,14 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
           if (e.origin = NETLOGOWEB_SITE && e.data.type == 'nlw-resize') {
             // load in the iframe, resize, and render a border
             nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()
+            nlwPreview.setStyle('width',  (e.data.width + "px"))
+            nlwPreview.setStyle('height', (e.data.height + "px"))
+            nlwPreview.setStyle("border", "1px solid black")
+            dialog.enableButton("ok");
+          }
+          if (e.origin = NETTANGO_SITE && e.data.type == 'ntb-resize') {
+            // load in the iframe, resize, and render a border
+            nlwPreview = dialog.getContentElement('tab', 'nt-preview').getElement()
             nlwPreview.setStyle('width',  (e.data.width + "px"))
             nlwPreview.setStyle('height', (e.data.height + "px"))
             nlwPreview.setStyle("border", "1px solid black")

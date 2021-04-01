@@ -18,10 +18,9 @@ var NETLOGOWEB_SITE = "https://netlogoweb.org"
 var MODEL_JSON_PATH = "/model/list.json"
 var MODEL_STATUSES_JSON_PATH = "/model/statuses.json"
 var NLW_QUERY_SELECTOR = "/web?"
-var NLW_MODEL_ASSET_PATH = "/assets/"
+var NLW_MODEL_ASSET_PATH = "/assets/modelslib/"
 
 var NLW_MODEL_PATH_FULL = "public/modelslib/"
-var NLW_MODEL_PATH_PARTIAL = "public/"
 
 // Define the dialog
 CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
@@ -44,21 +43,8 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
         elements: [
           {
             // Select element to pick the model to preview
-            type: 'select',
-            id: 'nlw-picker',
-            label: 'Select an option from the dropdown below to preview the model and then click Insert Model',
-            items: [ ],
-            // Called by the main setupContent method call on dialog initialization.
-            setup: function( element ) {
-              // Add a default option
-              this.add('-- select a model to preview -- ', '')
-            },
-            onChange: function() {
-              var dialog = this.getDialog();
-              //dialog.disableButton("ok");
-              // Set the iframe src to the selected option
-              dialog.getContentElement('tab', 'nlw-preview').getElement().setAttribute('src',this.getValue());
-            },
+            type: 'html',
+            html: '<style>input[id="nlw-picker"] { height:50px; width:100%; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAACYktHRAD/h4/MvwAAAAl2cEFnAAABKgAAASkAUBZlMQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMy0wNC0xMFQwNjo1OTowNy0wNzowMI5BiVEAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTMtMDQtMTBUMDY6NTk6MDctMDc6MDD/HDHtAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAABF0RVh0VGl0bGUAc2VhcmNoLWljb27Cg+x9AAACKklEQVQ4T6WUSavqQBCFK+2sII7gShFXLpUsBBHFf+1KcAQFwaWiolsnnBDn++4p0iHRqPDuByFJd/Wp6qrqVn5+IQP3+52m0ymtVis6Ho885na7KRgMUiKR4O9vmEQHgwGNx2NyOp0khCBFUXgcJo/Hg67XK8ViMcpkMjz+Dl200+nQZrMhh8PBE4gYQgDidrudvzEOm2KxyP9WsCginM1mHKEUS6VSFA6HOWI4G41GPAfx2+1GgUCAVFXVZMwovwY/lUqFPB4PiyFn+XxemzbT6/VovV6z8Ol0olwux+LPCBQFEQKIvhME2WyWbWGHFCD/VghUGVvE1rDlb6TTabbFmuVyqY2aEWgbFALeI5GINvyeUCjEtlgju+IZoRWfkS30CURoxFJUNjMEt9stf38CNjJKIFvNiMBJgTebzcZt843hcMhCELWqPBDxeJwulwtvC/3X7/e1qVfgFD0rC5tMJrUZM8Lr9VI0GmVBRDCfz6nZbHI/Sna7HXW7XZpMJtxSiBIP1lmhH9NqtaqfGKQDTmQREBnSgwfmMqfYYblc1o+2xHShtNttLgSiee4EmMEp3hDBPJzikimVSuRyuTTLJ1GwWCz4pCB3UhiL/X4/Hw50C5zjLSM+n898weCogxdRIzAGxigAdtNqtV6EC4UC+Xy+z6Kf2O/31Gg0TMK4ZBDxf4uCw+FA9XpdF0aaUOg/iQLcHbVaTb/p0Cl/FgXIJ/oYnaCqKv0DC6dltH6Ks84AAAAASUVORK5CYII=); background-position: 10px 10px; background-repeat: no-repeat;padding-left: 40px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px;} input[id="nlw-picker"]:focus { border: 3px solid #555;}</style> <input id="nlw-picker" list="nlw-models-list" placeholder="-- select a model to preview --"><datalist id="nlw-models-list"></datalist> ',
           },
           {
             // iframe element we use to load the model into
@@ -76,21 +62,8 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
         elements: [
           {
             // Select element to pick the model to preview
-            type: 'select',
-            id: 'nt-picker',
-            label: 'Select an option from the dropdown below to preview the model and then click Insert Model',
-            items: [ ],
-            // Called by the main setupContent method call on dialog initialization.
-            setup: function( element ) {
-              // Add a default option
-              this.add('-- select a model to preview -- ', '')
-            },
-            onChange: function() {
-              var dialog = this.getDialog();
-            //  dialog.disableButton("ok");
-              // Set the iframe src to the selected option
-              dialog.getContentElement('tab', 'nt-preview').getElement().setAttribute('src',this.getValue());
-            },
+            type: 'html',
+            html: '<style>input[id="nt-picker"] { height:50px; width:100%; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAACYktHRAD/h4/MvwAAAAl2cEFnAAABKgAAASkAUBZlMQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMy0wNC0xMFQwNjo1OTowNy0wNzowMI5BiVEAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTMtMDQtMTBUMDY6NTk6MDctMDc6MDD/HDHtAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAABF0RVh0VGl0bGUAc2VhcmNoLWljb27Cg+x9AAACKklEQVQ4T6WUSavqQBCFK+2sII7gShFXLpUsBBHFf+1KcAQFwaWiolsnnBDn++4p0iHRqPDuByFJd/Wp6qrqVn5+IQP3+52m0ymtVis6Ho885na7KRgMUiKR4O9vmEQHgwGNx2NyOp0khCBFUXgcJo/Hg67XK8ViMcpkMjz+Dl200+nQZrMhh8PBE4gYQgDidrudvzEOm2KxyP9WsCginM1mHKEUS6VSFA6HOWI4G41GPAfx2+1GgUCAVFXVZMwovwY/lUqFPB4PiyFn+XxemzbT6/VovV6z8Ol0olwux+LPCBQFEQKIvhME2WyWbWGHFCD/VghUGVvE1rDlb6TTabbFmuVyqY2aEWgbFALeI5GINvyeUCjEtlgju+IZoRWfkS30CURoxFJUNjMEt9stf38CNjJKIFvNiMBJgTebzcZt843hcMhCELWqPBDxeJwulwtvC/3X7/e1qVfgFD0rC5tMJrUZM8Lr9VI0GmVBRDCfz6nZbHI/Sna7HXW7XZpMJtxSiBIP1lmhH9NqtaqfGKQDTmQREBnSgwfmMqfYYblc1o+2xHShtNttLgSiee4EmMEp3hDBPJzikimVSuRyuTTLJ1GwWCz4pCB3UhiL/X4/Hw50C5zjLSM+n898weCogxdRIzAGxigAdtNqtV6EC4UC+Xy+z6Kf2O/31Gg0TMK4ZBDxf4uCw+FA9XpdF0aaUOg/iQLcHbVaTb/p0Cl/FgXIJ/oYnaCqKv0DC6dltH6Ks84AAAAASUVORK5CYII=); background-position: 10px 10px; background-repeat: no-repeat;padding-left: 40px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px;} input[id="nt-picker"]:focus { border: 3px solid #555;}</style> <input id="nt-picker" list="nt-models-list" placeholder="-- select a model to preview --"><datalist id="nt-models-list"></datalist> ',
           },
           {
             // iframe element we use to load the model into
@@ -112,20 +85,39 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
           var modelStatuses = JSON.parse(statusesJSON);
           // Go through the models and get rid of any that don't compile on NLW
           for ( model of modelNames ) {
-            if (modelStatuses[model].status != "not_compiling")
-              dialog.getContentElement('tab', 'nlw-picker').add(
-                model.substring(NLW_MODEL_PATH_FULL.length, model.length),
-                NETLOGOWEB_SITE + NLW_QUERY_SELECTOR + NETLOGOWEB_SITE + NLW_MODEL_ASSET_PATH + model.substring(NLW_MODEL_PATH_PARTIAL.length, model.length) + ".nlogo"
-              );
+            if (modelStatuses[model].status != "not_compiling") {
+              var option = document.createElement('option');
+              option.value = model.substring(NLW_MODEL_PATH_FULL.length, model.length);
+              document.getElementById('nlw-models-list').appendChild(option);
+            }
           }
         });
       });
 
-      $('#nlw-picker').selectize({
-          create: true,
-          sortField: 'text'
+      document.getElementById('nlw-picker').addEventListener('change', function() {
+        dialog.getContentElement('nlw-tab', 'nlw-preview').getElement().setAttribute('src', NETLOGOWEB_SITE + NLW_QUERY_SELECTOR + NETLOGOWEB_SITE + NLW_MODEL_ASSET_PATH + document.getElementById('nlw-picker').value + ".nlogo");
       });
 
+      // Fetch the NLW Models Library resources we need
+      var NTmodelJSON = CKEDITOR.ajax.load("https://raw.githubusercontent.com/NetLogo/nt-models/main/library.json", function( NTmodelJSON ) {
+        var NTmodels = JSON.parse(NTmodelJSON).models;
+          for ( model of NTmodels ) {
+              var option = document.createElement('option');
+              option.value = model.name;
+              option.dataset.value = model.url;
+              document.getElementById('nt-models-list').appendChild(option);
+          }
+        });
+
+      document.getElementById('nt-picker').addEventListener('change', function(e) {
+        for ( option of document.getElementById("nt-models-list").getElementsByTagName('option')) {
+            if (option.value == e.target.value) {
+              dialog.getContentElement('nt-tab', 'nt-preview').getElement().setAttribute('src', option.dataset.value);
+              dialog.getContentElement('nt-tab', 'nt-preview').getElement().setAttribute('style', "width:1000px; height:1000px;");
+              dialog.enableButton("ok");
+            }
+        }
+      });
       // NOTE: on failure of the above, the NLW List will not be populated. Page reload necessary. -  12/5/2020 - CPB
 
       // Add a listener for iframe PostMessages. NLW sends one with the complete
@@ -135,18 +127,18 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
           // Check that the message is from where we think
           if (e.origin = NETLOGOWEB_SITE && e.data.type == 'nlw-resize') {
             // load in the iframe, resize, and render a border
-            nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()
+            nlwPreview = dialog.getContentElement('nlw-tab', 'nlw-preview').getElement()
             nlwPreview.setStyle('width',  (e.data.width + "px"))
             nlwPreview.setStyle('height', (e.data.height + "px"))
             nlwPreview.setStyle("border", "1px solid black")
             dialog.enableButton("ok");
           }
-          if (e.origin = NETTANGO_SITE && e.data.type == 'ntb-resize') {
+          if (e.origin = NETLOGOWEB_SITE && e.data.type == 'ntb-resize') {
             // load in the iframe, resize, and render a border
-            nlwPreview = dialog.getContentElement('tab', 'nt-preview').getElement()
-            nlwPreview.setStyle('width',  (e.data.width + "px"))
-            nlwPreview.setStyle('height', (e.data.height + "px"))
-            nlwPreview.setStyle("border", "1px solid black")
+            ntPreview = dialog.getContentElement('nt-tab', 'nt-preview').getElement()
+            ntPreview.setStyle('width',  (e.data.width + "px"))
+            ntPreview.setStyle('height', (e.data.height + "px"))
+            ntPreview.setStyle("border", "1px solid black")
             dialog.enableButton("ok");
           }
         }, false);
@@ -170,16 +162,24 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
 
       var dialog = this;
 
-      console.log(dialog.definition.dialog._.currentTabId)
-
-      // load up the preview element
-      nlwPreview = dialog.getContentElement('tab', 'nlw-preview').getElement()
-
-      // Create our iframe
       var newElement = new CKEDITOR.dom.element( 'iframe' );
-      newElement.setStyle('width',  nlwPreview.getStyle('width'));
-      newElement.setStyle('height', nlwPreview.getStyle('height'));
-      newElement.setAttribute('src', dialog.getContentElement('tab', 'model-picker').getValue());
+
+      if (dialog.definition.dialog._.currentTabId == "nt-tab") {
+        // load up the preview element
+        ntPreview = dialog.getContentElement('nt-tab', 'nt-preview').getElement()
+        // Create our iframe
+        newElement.setStyle('width',  ntPreview.getStyle('width'));
+        newElement.setStyle('height', ntPreview.getStyle('height'));
+        newElement.setAttribute('src', ntPreview.getAttribute("src"));
+      }
+      else if (dialog.definition.dialog._.currentTabId == "nlw-tab") {
+        // load up the preview element
+        nlwPreview = dialog.getContentElement('nlw-tab', 'nlw-preview').getElement()
+        // Create our iframe
+        newElement.setStyle('width',   nlwPreview.getStyle('width'));
+        newElement.setStyle('height',  nlwPreview.getStyle('height'));
+        newElement.setAttribute('src', nlwPreview.getAttribute("src"));
+      }
 
       // Place it in the editor
       editor.insertElement( newElement );

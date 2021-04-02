@@ -113,7 +113,6 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
         for ( option of document.getElementById("nt-models-list").getElementsByTagName('option')) {
             if (option.value == e.target.value) {
               dialog.getContentElement('nt-tab', 'nt-preview').getElement().setAttribute('src', option.dataset.value);
-              dialog.getContentElement('nt-tab', 'nt-preview').getElement().setAttribute('style', "width:1000px; height:1000px;");
               dialog.enableButton("ok");
             }
         }

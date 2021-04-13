@@ -5,25 +5,25 @@
  */
 
 /**
- * @fileOverview Plugin for browsing NetLogo Web Models Library.
+ * @fileOverview Plugin for browsing NetLogo Web and NetTango Models Library.
  * This relatively simple plugin allows one to browse the NetLogo Web Models
  * Library without leaving the CT-STEM site. It consists of a simple dialog
- * popup that presents the user with a drop-down of all compatible NetLogo Web
- * Models Library models. These models are actually directly fetched from the
- * NetLogo Web site meaning they are always kept perfectly up to date.
+ * popup that presents the user with two Tab, each of which has a drop-down of
+ * all compatible NetLogo Web and NetTango Models Library models. These models
+ * are directly fetched from the each respective library.
  *
  * A user can select one of the models and the dialog will automatically preview
- * and resize the NetLogo Web model. If the user then wants to insert this model,
- * they need only click the "Insert Model" button. The plugin will then insert
- * an iframe element, src-ed to the offical NetLogo Web models library hosted on
- * netlogoweb.org, and insert said iframe element at the user's cursor within
- * their CKEditor instance. Additionally, it will set the width and height of the
- * frame to fully display the model.
+ * and resize the model. If the user then wants to insert this model, they need
+ * only click the "Insert Model" button. The plugin will then insert
+ * an iframe element, src-ed to the offical models library files and insert said
+ * iframe element at the user's cursor within their CKEditor instance.
+ * Additionally, it will set the width and height of the frame to fully display
+ * the model.
  *
  * The plugin requires both the ajax and 'iframedialog' plugins be installed in
  * your CKEditor instance.
  *
- * WARNING: Note, because this inserts iframes linked directly to netlogoweb.org
+ * WARNING: Note, because this inserts iframes linked directly to library versions
  * this means that any models created via this method ARE SUBJECT TO MODIFICATION
  * and will AUTOMATICALLY be updated to their latest versions. These changes
  * can be tracked at github.com/NetLogo/models.

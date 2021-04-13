@@ -1,6 +1,6 @@
 /**
- * NetLogo Web Models Library Plugin
- * @license Copyright (c) 2020, CT-STEM. All rights reserved.
+ * NetLogo Web and NetTango Models Library Plugin
+ * @license Copyright (c) 2021, CT-STEM. All rights reserved.
  * @author Connor Bain
  */
 
@@ -9,7 +9,7 @@
  * functions would need to be modified, as would the CONSTANTS above.
  * @reference https://github.com/NetLogo/Galapagos/blob/master/app/assets/javascripts/models.coffee
  *
- * These are current as of 12/3/2020 -- CPB
+ * These are current as of 4/13/2021 -- CPB
  *
  * Example URL for iframe src:
  * https://netlogoweb.org/web?https://netlogoweb.org/assets/modelslib/Curricular%20Models/Connected%20Chemistry/Connected%20Chemistry%20Gas%20Combustion.nlogo
@@ -61,6 +61,8 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
         // The tab content.
         elements: [
           {
+            // Note, we use custom HTML elements in order to use the input / datalist styling provided by browsers
+
             // Select element to pick the model to preview
             type: 'html',
             html: '<style>input[id="nt-picker"] { height:50px; width:100%; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAACYktHRAD/h4/MvwAAAAl2cEFnAAABKgAAASkAUBZlMQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMy0wNC0xMFQwNjo1OTowNy0wNzowMI5BiVEAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTMtMDQtMTBUMDY6NTk6MDctMDc6MDD/HDHtAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAABF0RVh0VGl0bGUAc2VhcmNoLWljb27Cg+x9AAACKklEQVQ4T6WUSavqQBCFK+2sII7gShFXLpUsBBHFf+1KcAQFwaWiolsnnBDn++4p0iHRqPDuByFJd/Wp6qrqVn5+IQP3+52m0ymtVis6Ho885na7KRgMUiKR4O9vmEQHgwGNx2NyOp0khCBFUXgcJo/Hg67XK8ViMcpkMjz+Dl200+nQZrMhh8PBE4gYQgDidrudvzEOm2KxyP9WsCginM1mHKEUS6VSFA6HOWI4G41GPAfx2+1GgUCAVFXVZMwovwY/lUqFPB4PiyFn+XxemzbT6/VovV6z8Ol0olwux+LPCBQFEQKIvhME2WyWbWGHFCD/VghUGVvE1rDlb6TTabbFmuVyqY2aEWgbFALeI5GINvyeUCjEtlgju+IZoRWfkS30CURoxFJUNjMEt9stf38CNjJKIFvNiMBJgTebzcZt843hcMhCELWqPBDxeJwulwtvC/3X7/e1qVfgFD0rC5tMJrUZM8Lr9VI0GmVBRDCfz6nZbHI/Sna7HXW7XZpMJtxSiBIP1lmhH9NqtaqfGKQDTmQREBnSgwfmMqfYYblc1o+2xHShtNttLgSiee4EmMEp3hDBPJzikimVSuRyuTTLJ1GwWCz4pCB3UhiL/X4/Hw50C5zjLSM+n898weCogxdRIzAGxigAdtNqtV6EC4UC+Xy+z6Kf2O/31Gg0TMK4ZBDxf4uCw+FA9XpdF0aaUOg/iQLcHbVaTb/p0Cl/FgXIJ/oYnaCqKv0DC6dltH6Ks84AAAAASUVORK5CYII=); background-position: 10px 10px; background-repeat: no-repeat;padding-left: 40px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px;} input[id="nt-picker"]:focus { border: 3px solid #555;}</style> <input id="nt-picker" list="nt-models-list" placeholder="-- select a model to preview --"><datalist id="nt-models-list"></datalist> ',
@@ -78,6 +80,7 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
     onLoad: function() {
 
       var dialog = this;
+
       // Fetch the NLW Models Library resources we need
       var modelJSON = CKEDITOR.ajax.load( NETLOGOWEB_SITE + MODEL_JSON_PATH, function( modelJSON ) {
         var modelNames = JSON.parse(modelJSON)
@@ -94,11 +97,13 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
         });
       });
 
+      // Set listener for preview loader on picked model
       document.getElementById('nlw-picker').addEventListener('change', function() {
+        dialog.disableButton("ok");
         dialog.getContentElement('nlw-tab', 'nlw-preview').getElement().setAttribute('src', NETLOGOWEB_SITE + NLW_QUERY_SELECTOR + NETLOGOWEB_SITE + NLW_MODEL_ASSET_PATH + document.getElementById('nlw-picker').value + ".nlogo");
       });
 
-      // Fetch the NLW Models Library resources we need
+      // Fetch the NetTango Library resources we need
       var NTmodelJSON = CKEDITOR.ajax.load("https://raw.githubusercontent.com/NetLogo/nt-models/main/library.json", function( NTmodelJSON ) {
         var NTmodels = JSON.parse(NTmodelJSON).models;
           for ( model of NTmodels ) {
@@ -109,18 +114,21 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
           }
         });
 
+      // Set listener for preview loader on picked model
       document.getElementById('nt-picker').addEventListener('change', function(e) {
         for ( option of document.getElementById("nt-models-list").getElementsByTagName('option')) {
             if (option.value == e.target.value) {
+              dialog.disableButton("ok");
               dialog.getContentElement('nt-tab', 'nt-preview').getElement().setAttribute('src', option.dataset.value);
-              dialog.enableButton("ok");
             }
         }
       });
-      // NOTE: on failure of the above, the NLW List will not be populated. Page reload necessary. -  12/5/2020 - CPB
 
-      // Add a listener for iframe PostMessages. NLW sends one with the complete
-      // width and height of the rendered model.
+      // NOTE: on failure of either of the above, the models list will not be populated.
+      // Page reload necessary. -  4/13/2021 - CPB
+
+      // Add a listener for iframe PostMessages. NLW/NT send one with the complete
+      // width and height of the rendered model. To have friendly iframe sizing
       window.addEventListener('message',
         function handleMessage(e) {
           // Check that the message is from where we think
@@ -146,7 +154,7 @@ CKEDITOR.dialog.add( 'NLModelsDialog', function( editor ) {
     // Invoked when the dialog is loaded.
     onShow: function() {
       var dialog = this;
-      //dialog.disableButton("ok");
+      dialog.disableButton("ok");
       // Get the selection from the editor.
       var selection = editor.getSelection();
       // Get the element at the start of the selection.
